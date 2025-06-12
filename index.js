@@ -12,7 +12,7 @@ const Gameboard = (function () {
   }
   const printBoard = () => {
     const size = 3;
-    const visualBoard = [];
+    // const visualBoard = [];
 
     for (let i = 0; i < board.length; i += size) {
       // visualBoard.push(board.slice(i, i + size));
@@ -47,8 +47,20 @@ const GameController = function (
 
   const startGame = (box) => {
     board.makeMove(box, getActivePlayer().symbol);
-    switchActivePlayer();
+
     board.printBoard();
+    const result = checkWin();
+    if (result) {
+      if (result === "draw") {
+        console.log("Game Over: It's a draw.");
+      } else {
+        console.log(
+          `Game Over: ${getActivePlayer().name} loses, ${result} wins!`
+        );
+      }
+      return;
+    }
+    switchActivePlayer();
   };
 
   return { startGame, getActivePlayer };
@@ -65,15 +77,34 @@ const checkWin = () => {
     [1, 5, 9],
     [3, 5, 7],
   ];
-  const gameOver = false;
-  const { getBoard } = Gameboard;
-  for (let i = 0; i < winConditions.length; i++) {
-    const winner = getBoard().filter(winConditions[i].map((pattern) => ))
+  let gameOver = false;
+  const board = Gameboard.getBoard();
+  for (let conditions of winConditions) {
+    const [a, b, c] = conditions;
+    let valueA = board[a - 1];
+    let valueB = board[b - 1];
+    let valueC = board[c - 1];
+
+    if (valueA && valueA === valueB && valueA === valueC) {
+      console.log(`${valueA} wins`);
+      gameOver = true
+      return valueA;
+    }
   }
+
+  if (board.every((cell) => cell !== null)) {
+    console.log("It's a draw!");
+    return "draw";
+  }
+
+  return null;
 };
 
 const game = GameController();
 game.startGame(1);
 game.startGame(4);
-game.startGame(6);
+game.startGame(2);
 game.startGame(9);
+game.startGame(3);
+game.startGame(4);
+
