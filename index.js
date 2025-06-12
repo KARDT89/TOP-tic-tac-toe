@@ -77,7 +77,7 @@ const checkWin = () => {
     [1, 5, 9],
     [3, 5, 7],
   ];
-  let gameOver = false;
+//   let gameOver = false;
   const board = Gameboard.getBoard();
   for (let conditions of winConditions) {
     const [a, b, c] = conditions;
@@ -87,7 +87,7 @@ const checkWin = () => {
 
     if (valueA && valueA === valueB && valueA === valueC) {
       console.log(`${valueA} wins`);
-      gameOver = true
+    //   gameOver = true
       return valueA;
     }
   }
@@ -101,10 +101,5 @@ const checkWin = () => {
 };
 
 const game = GameController();
-game.startGame(1);
-game.startGame(4);
-game.startGame(2);
-game.startGame(9);
-game.startGame(3);
-game.startGame(4);
+
 
