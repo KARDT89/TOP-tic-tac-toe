@@ -22,7 +22,9 @@ const Gameboard = (function () {
     console.log(" ");
   };
 
-  return { getBoard, makeMove, printBoard };
+  const reset = () => board = new Array(9).fill(null);
+
+  return { getBoard, makeMove, printBoard, reset };
 })();
 
 const GameController = function (
@@ -77,7 +79,7 @@ const checkWin = () => {
     [1, 5, 9],
     [3, 5, 7],
   ];
-//   let gameOver = false;
+    let gameOver = false;
   const board = Gameboard.getBoard();
   for (let conditions of winConditions) {
     const [a, b, c] = conditions;
@@ -87,19 +89,70 @@ const checkWin = () => {
 
     if (valueA && valueA === valueB && valueA === valueC) {
       console.log(`${valueA} wins`);
-    //   gameOver = true
+        gameOver = true
       return valueA;
     }
   }
 
   if (board.every((cell) => cell !== null)) {
     console.log("It's a draw!");
+    gameOver = true
     return "draw";
   }
 
   return null;
 };
 
-const game = GameController();
+function ticTacToe(player1="tamal", player2="dt89"){
+  const game = GameController(player1, player2)
+  const boxes = document.querySelectorAll(".box")
+  const gameStatus = document.querySelector(".display-winner")
+  boxes.forEach((box, idx) => {
+    box.addEventListener("click", () => {
+      if(box.textContent === ""){
+        const currentPlayer = game.getActivePlayer()
+        box.textContent = currentPlayer.symbol
+        game.startGame(idx + 1)
+        const nextPlayer = game.getActivePlayer()
+        const status = checkWin()
+        // console.log("gui status", status);
+        if (status === "draw") {
+            gameStatus.innerHTML = `It's a Draw`;
+          } else if (status !== null) {
+            gameStatus.innerHTML = `${currentPlayer.name} Won!`;
+          } else {
+            gameStatus.innerHTML = `${nextPlayer.name}'s move`;
+          }
+      }
+    })
+  })
+  
+}
 
+const displayController = () => {
+  const gameBoard = document.querySelector(".gameboard");
+  const form = document.querySelector("form");
+  const status = document.querySelector(".display-winner")
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const player1 = e.target["player1"].value;
+    const player2 = e.target["player2"].value;
+    console.log("player1:", player1, "player2:", player2);
+    // const game = GameController(player1, player2);
+    if(player1 === "" || player2 === ""){
+      status.innerHTML = "Enter player names to Start Game";
+    }else {
+      Gameboard.reset();
+      gameBoard.innerHTML = "";
+      for (let i = 1; i <= 9; i++) {
+      const div = document.createElement("div");
+      div.classList.add("box", `box-${i}`);
+      gameBoard.appendChild(div);
+    }
+    ticTacToe(player1, player2)
+    }
+    
+  });
+};
 
+displayController();
